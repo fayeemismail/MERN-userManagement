@@ -1,12 +1,13 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Home from './assets/pages/Home'
-import About from './assets/pages/About'
-import SignIn from './assets/pages/SignIn'
-import SignUp from './assets/pages/SignUp'
-import Profile from './assets/pages/Profile'
+import Home from './assets/pages/user/Home'
+import About from './assets/pages/user/About'
+import SignIn from './assets/pages/user/SignIn'
+import SignUp from './assets/pages/user/SignUp'
+import Profile from './assets/pages/user/Profile'
 import Header from './assets/components/Header'
 import { PrivateRoute } from './assets/components/PrivateRoute'
+import { Dashboard } from './assets/pages/admin/Dashboard'
 
 const App = () => {
   return (
