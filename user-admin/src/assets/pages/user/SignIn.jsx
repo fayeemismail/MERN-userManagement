@@ -1,37 +1,43 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { signInStart, signInSuccess, signInFailure } from '../../../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import OAuth from '../../components/OAuth';
+import OAuth from '../../components/user/OAuth';
 
 const SignIn = () => {
 
   const [formData, setFormData] = useState({});
-  const {loading, error} = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate()
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (currentUser) {
+      navigate('/')
+    }
+  }, [currentUser, navigate])
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id] : e.target.value })
+    setFormData({ ...formData, [e.target.id]: e.target.value })
   }
 
-  const handleSubmit = async (e) =>{
+  const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      
+
       dispatch(signInStart)
 
       const res = await fetch('/api/auth/signin', {
         method: 'POST',
         headers: {
-          'Content-Type' : 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData)
       });
       const data = await res.json();
-      
-      
-      if(data.success == false){
+
+
+      if (data.success == false) {
         dispatch(signInFailure(data))
         return;
       }
@@ -42,6 +48,7 @@ const SignIn = () => {
     } catch (error) {
       dispatch(signInFailure(error))
     }
+
   }
 
   return (
@@ -53,7 +60,7 @@ const SignIn = () => {
 
         <input type="password" placeholder='Enter Password' id='password' className='bg-slate-100 p-3 rounded-lg' onChange={handleChange} />
 
-        <button disabled={loading} className='bg-[#0095F6] text-white p-3 rounded-lg uppercase hover:opacity-90 disabled:opacity-80'>{ loading ? 'Loading...' : 'Sign In'  }</button>
+        <button disabled={loading} className='bg-[#0095F6] text-white p-3 rounded-lg uppercase hover:opacity-90 disabled:opacity-80'>{loading ? 'Loading...' : 'Sign In'}</button>
 
         <OAuth />
 
@@ -64,9 +71,9 @@ const SignIn = () => {
           <span className='text-blue-500'>Sign up</span>
         </Link>
       </div>
-      <p className='text-red-700 mt-7'>{ error ? error.message || 'Something went wrong!' : "" }</p>
+      <p className='text-red-700 mt-7'>{error ? error.message || 'Something went wrong!' : ""}</p>
     </div>
   )
 }
 
-export default SignIn
+export default SignIn 
