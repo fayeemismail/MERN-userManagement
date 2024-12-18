@@ -24,6 +24,12 @@ const adminSlice = createSlice({
         },
         clearAdminError: (state) => {
             state.error = null; // Reset the error state
+        },
+        adminSignOut: (state) => {
+            state.adminData = null;
+            state.loading = false;
+            state.error = false;
+
         }
     }
 });
@@ -32,7 +38,8 @@ export const {
     adminSigninStart,
     adminSignInSuccess,
     adminSignInFail,
-    clearAdminError
+    clearAdminError,
+    adminSignOut,
 } = adminSlice.actions;
 
 export default adminSlice.reducer;

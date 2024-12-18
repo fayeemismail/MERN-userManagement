@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
   updateUserStart,
@@ -8,7 +9,7 @@ import {
   deleteUserStart,
   deleteUserFailure,
   deleteUserSuccess,
-  signOut
+  signOut,
 } from '../../../redux/user/userSlice';
 
 const Profile = () => {
@@ -24,6 +25,7 @@ const Profile = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleFileUpload = async (file) => {
     const uploadData = new FormData();
@@ -51,7 +53,6 @@ const Profile = () => {
     const { id, value } = e.target;
 
     if (id === 'password') {
-      
       const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
       if (value && !passwordRegex.test(value)) {
         setPasswordError('Password must be at least 8 characters long, include a special character, and a number.');
@@ -67,13 +68,12 @@ const Profile = () => {
     e.preventDefault();
 
     if (passwordError) {
-      return; 
+      return;
     }
 
     const updatedData = new FormData();
     Object.keys(formData).forEach((key) => {
       if (key === "password" && !formData[key]) {
-        
         return;
       }
       updatedData.append(key, formData[key]);
@@ -94,7 +94,7 @@ const Profile = () => {
   const handleDeleteAccount = async () => {
     try {
       dispatch(deleteUserStart());
-      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+      const res = await fetch(`/api/user/userDelete/${currentUser._id}`, {
         method: 'DELETE'
       });
 
@@ -117,6 +117,22 @@ const Profile = () => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    const userData = async () => {
+      try {
+        const res = await fetch(`/api/user/${currentUser._id}`);
+        const data = await res.json();
+        if (data.success == false) {
+          dispatch(signOut(data));
+          navigate('/');
+        }
+      } catch (error) {
+        dispatch(signInFailure(error));
+      }
+    }
+    userData()
+  }, []);
 
   return (
     <div className="p-3 max-w-lg mx-auto">

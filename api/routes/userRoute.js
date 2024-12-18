@@ -8,7 +8,7 @@ const upload = multer({ dest: "uploads/" });
 const router = express.Router();
 
 
-router.get('/', test)
+router.get('/:id', test)
 router.post('/update/:id', upload.single('profilePicture'), verifyToken, updateUser);
 router.delete('/delete/:id', verifyToken, deleteUser)
 

@@ -1,11 +1,14 @@
 import express from "express";
-import { admintest } from "../controllers/adminController.js";
+import { admintest, deleteUser, editUser, updateUser, userBlock } from "../controllers/adminController.js";
 import { verifyAdminToken } from "../utils/verifyUser.js";
 
 const adminRouter = express.Router()
 
 adminRouter.get('/', admintest);
-adminRouter.get('/signin')
+adminRouter.post('/userBlock', userBlock );
+adminRouter.get('/EditUser/:userid', editUser);
+adminRouter.put('/updateUser/:userid', updateUser);
+adminRouter.delete('/userDelete/:userid', deleteUser)
 
 
 

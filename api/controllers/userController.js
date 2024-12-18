@@ -21,12 +21,18 @@ export const uploadPhoto = async(req, res) => {
     }
 }
 
-export const test = (req, res)=>{
-    res.json({
-        message: 'api is working'
-    })
-    console.log('connectinh')
+export const test = async (req, res)=>{
+  const userId = req.params.id;
+  try {
+    const user = await User.findById(userId);
+    if(!user) return res.status(404).json({success: false});
+    if(user.isBlocked) return res.status(404).json({success: false});
+    res.status(200).json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
 }
+
 
 
 

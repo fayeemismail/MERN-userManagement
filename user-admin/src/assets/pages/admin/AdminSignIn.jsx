@@ -5,7 +5,8 @@ import { adminSigninStart, adminSignInSuccess, adminSignInFail, clearAdminError 
 
 export const AdminSignIn = () => {
   const [formData, setFormData] = useState({});
-  const { currentUser, loading, error } = useSelector((state) => state.admin);
+  const { adminData, loading, error } = useSelector((state) => state.admin);
+  // console.log(adminData)
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -29,7 +30,7 @@ export const AdminSignIn = () => {
       });
 
       const data = await res.json();
-      console.log(data)
+      
 
       if (data.success === false) {
         dispatch(adminSignInFail(data));

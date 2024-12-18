@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { signInFailure, signOut } from '../../../redux/user/userSlice';
 
 const Home = () => {
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
+  const dispatch = useDispatch();
 
   const handleAboutPage = () => {
     navigate('/about');
@@ -18,6 +20,22 @@ const Home = () => {
       setErrorMessage('You need to log in first to visit the Profile page.');
     }
   };
+
+  useEffect(() => {
+    const userData = async () => {
+      try {
+        const res = await fetch(`/api/user/${currentUser._id}`);
+        const data = await res.json();
+        if(data.success == false){
+          dispatch(signOut(data));
+          navigate('/');
+        }
+      } catch (error) {
+        dispatch(signInFailure(error));
+      }
+    }
+    userData()
+  }, []);
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col items-center justify-center text-center">

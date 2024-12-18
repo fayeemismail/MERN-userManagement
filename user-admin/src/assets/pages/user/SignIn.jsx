@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
-import { signInStart, signInSuccess, signInFailure } from '../../../redux/user/userSlice';
+import { signInStart, signInSuccess, signInFailure, clearError } from '../../../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import OAuth from '../../components/user/OAuth';
 
@@ -39,6 +39,9 @@ const SignIn = () => {
 
       if (data.success == false) {
         dispatch(signInFailure(data))
+        setTimeout(()=> {
+          dispatch(clearError())
+        }, 9000);
         return;
       }
 
@@ -71,7 +74,7 @@ const SignIn = () => {
           <span className='text-blue-500'>Sign up</span>
         </Link>
       </div>
-      <p className='text-red-700 mt-7'>{error ? error.message || 'Something went wrong!' : ""}</p>
+      <p className='text-red-700 mt-7'>{ error ? error.message || 'Something went wrong!' : ""}</p>
     </div>
   )
 }

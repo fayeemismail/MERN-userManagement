@@ -21,8 +21,10 @@ export const signin = async (req, res, next) => {
         const { email, password } = req.body;
         const validUser = await User.findOne({ email })
         if (!validUser) return next(errorHandler(404, 'User Not Found'));
+        if(!password) return next(errorHandler(401, 'password required'));
         const validPassword = bcryptjs.compareSync(password, validUser.password);
         if (!validPassword) return next(errorHandler(401, 'Invalid Credentials'));
+        if(validUser.isBlocked) return next(errorHandler(403, 'You are Blocked'));
         const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
         const { password: hashedPassword, ...rest } = validUser._doc;
         const expiryDate = new Date(Date.now() + 3600000);
@@ -39,35 +41,44 @@ export const signin = async (req, res, next) => {
 export const google = async (req, res, next) => {
     try {
         const user = await User.findOne({ email: req.body.email });
+
         if (user) {
+            // Check if the user is blocked
+            if (user.isBlocked) {
+                return res.status(403).json({ message: "Your account is blocked." });
+            }
+
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-            const { password: hashedPassword, ...rest } = user._doc
+            const { password: hashedPassword, ...rest } = user._doc;
             const expiryDate = new Date(Date.now() + 3600000);
 
-            res.cookie('access_token', token, { httpOnly: true, expires: expiryDate }).status(200).json(rest)
+            res.cookie('access_token', token, { httpOnly: true, expires: expiryDate }).status(200).json(rest);
         } else {
-            const genaratedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
-            const hashedPassword = bcryptjs.hashSync(genaratedPassword, 10);
+            const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+            const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
             const newUser = new User({
                 username: req.body.name.split(' ').join('').toLowerCase(),
                 email: req.body.email,
                 password: hashedPassword,
-                profilePicture: req.body.photo
+                profilePicture: req.body.photo,
+                isBlocked: false // Set isBlocked to false for new users
             });
             await newUser.save();
             const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
             const { password: hashedPassword2, ...rest } = newUser._doc;
-            const expiryDate = new Date(Date.new() + 3600000);
+            const expiryDate = new Date(Date.now() + 3600000);
 
             res.cookie('access_token', token, {
                 httpOnly: true,
                 expires: expiryDate
-            }).status(200).json(rest)
+            }).status(200).json(rest);
         }
     } catch (error) {
-
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
     }
-}
+};
+
 
 export const signout = async (req, res) => {
     res.clearCookie('access_token').status(200).json('Sign Out success')
@@ -93,3 +104,7 @@ export const adminSignIn = async (req, res, next) => {
         next(error)
     }
 }
+
+export const adminSignout = async (req, res) => {
+    res.clearCookie('access_token').status(200).json('Sign Out success')
+};
