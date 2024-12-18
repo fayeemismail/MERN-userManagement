@@ -10,7 +10,7 @@ export const uploadPhoto = async(req, res) => {
         });
 
         const user = await User.findByIdAndUpdate(
-            req.user.id, // Assuming `req.user.id` is set by middleware
+            req.user.id, 
             { profilePicture: result.secure_url },
             { new: true }
           );

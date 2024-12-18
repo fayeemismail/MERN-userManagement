@@ -6,7 +6,7 @@ import { adminSigninStart, adminSignInSuccess, adminSignInFail, clearAdminError 
 export const AdminSignIn = () => {
   const [formData, setFormData] = useState({});
   const { adminData, loading, error } = useSelector((state) => state.admin);
-  // console.log(adminData)
+  
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -16,7 +16,7 @@ export const AdminSignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Reset the error before each new submission
+    
     dispatch(clearAdminError());
     
     try {

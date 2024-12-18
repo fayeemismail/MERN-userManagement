@@ -43,7 +43,7 @@ export const google = async (req, res, next) => {
         const user = await User.findOne({ email: req.body.email });
 
         if (user) {
-            // Check if the user is blocked
+            
             if (user.isBlocked) {
                 return res.status(403).json({ message: "Your account is blocked." });
             }
@@ -61,7 +61,7 @@ export const google = async (req, res, next) => {
                 email: req.body.email,
                 password: hashedPassword,
                 profilePicture: req.body.photo,
-                isBlocked: false // Set isBlocked to false for new users
+                isBlocked: false 
             });
             await newUser.save();
             const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);

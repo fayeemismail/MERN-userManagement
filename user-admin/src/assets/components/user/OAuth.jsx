@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const OAuth = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState(''); // State to hold error message
+  const [errorMessage, setErrorMessage] = useState(''); 
 
   const handleGoogleClick = async () => {
     try {

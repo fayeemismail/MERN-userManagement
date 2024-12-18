@@ -1,15 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// Async action to fetch user data
+
 export const fetchUserData = createAsyncThunk(
   'user/fetchUserData',
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/user/${userId}`); // Adjust API endpoint as needed
+      const response = await fetch(`/api/user/${userId}`); 
       if (!response.ok) {
         throw new Error('Failed to fetch user data');
       }
-      return await response.json(); // Return user data
+      return await response.json(); 
     } catch (error) {
       return rejectWithValue(error.message);
     }

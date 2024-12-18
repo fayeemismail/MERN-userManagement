@@ -55,7 +55,7 @@ export const Dashboard = () => {
 
         const updatedUser = await res.json();
 
-        // Update local state with the new status
+        
         setUsers((prevUsers) =>
           prevUsers.map((user) =>
             user._id === userID ? { ...user, isBlocked: updatedUser.user.isBlocked } : user

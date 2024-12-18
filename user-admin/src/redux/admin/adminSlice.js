@@ -18,12 +18,12 @@ const adminSlice = createSlice({
             state.loading = false;
             state.error = false;
         },
-        adminSignInFail: (state, action) => { // Corrected name here
+        adminSignInFail: (state, action) => { 
             state.loading = false;
             state.error = action.payload;
         },
         clearAdminError: (state) => {
-            state.error = null; // Reset the error state
+            state.error = null; 
         },
         adminSignOut: (state) => {
             state.adminData = null;
